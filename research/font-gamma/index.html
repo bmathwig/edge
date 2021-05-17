@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Microsoft Edge Fonts</title>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&family=Roboto&family=Open+Sans&display=swap" rel="stylesheet">
+        <style>
+            nav {
+                background-color: #4a4a4a;
+                color: #f7f7f7;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-weight: 500;
+                padding: 0.5rem;
+            }
+
+            #mode {
+                width: 50px;
+                margin: 0 1rem 0 0.5rem;
+            }
+
+            #pixel-ratio {
+                margin: 0 0 0 0.5rem;
+            }
+
+            .content-container {
+                display: flex;
+                width: 1050px;
+                margin: 0.5rem 0;
+            }
+
+            .content-number {
+                width: 25px;
+                background-color: #f7f7f7;
+                color: #4a4a4a;
+                font-weight: 500;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                padding: 5px;
+                margin: 0 25px 0 0;
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .content-header {
+                background-color: #f7f7f7;
+                color: #4a4a4a;
+                font-weight: 500;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            .content-block {
+                width: 500px;
+                height: auto;
+                margin: 0.5rem;
+                padding: 0 0.5rem;
+            }
+
+            .force-grayscale {
+                will-change: transform;
+            }
+        </style>
+        
+    </head>
+    <body>
+        <nav>
+            <label for="mode">Mode:</label>
+            <select id="mode">
+                <option value="mode-a">A</option>
+                <option value="mode-b">B</option>
+                <option value="mode-c">C</option>
+                <option value="mode-d">D</option>
+                <option value="mode-e">E</option>
+                <option value="mode-f">F</option>
+                <option value="mode-g">G</option>
+                <option value="mode-h">H</option>
+                <option value="mode-i">I</option>
+                <option value="mode-j">J</option>
+            </select>
+            <span>Pixel Ratio:</span>
+            <span id="pixel-ratio"></span>
+        </nav>
+        <section class="content-container">
+            <span class="content-number">#</span>
+            <span class="content-block content-header">LEFT</span>
+            <span class="content-block content-header">RIGHT</span>
+        </section>
+        <main id="content"></main>
+        <script>
+            const PERMUATIONS = [
+                { name: 'Old Reddit', font: 'Arial', size: '14', color: 'rgb(34, 34, 34)', weight: '400', background: 'rgb(255, 255, 255)'},
+                { name: 'Google Docs', font: 'Arial', size: '14.667', color: 'rgb(0, 0, 0)', weight: '400', background: 'rgb(255, 255, 255)'},
+                { name: 'Facebook', font: 'Arial', size: '14', color: 'rgb(28, 30, 33)', weight: '400', background: 'rgb(255, 255, 255)'},
+                { name: 'Yahoo', font: 'Arial', size: '19', color: 'rgb(2, 14, 101)', weight: '700', background: 'rgb(255, 255, 255)'},
+                { name: 'OWA', font: 'Calibri', size: '14.6667', color: 'rgb(255, 255, 255)', weight: '400', background: 'rgb(51, 51, 51)'},
+                { name: 'Medium', font: 'medium-content-serif', size: '21', color: 'rgba(0, 0, 0, 0.84)', weight: '400', background: 'rgb(255, 255, 255)'},
+                { name: 'New Reddit', font: 'Noto Sans', size: '14', color: 'rgb(215, 218, 220)', weight: '400', background: 'rgb(26, 26, 27)'},
+                { name: 'Open Sans', font: 'Open Sans', size: '16', color: 'rgb(85, 87, 89)', weight: '400', background: 'rgb(255, 255, 255)'},
+                { name: 'YouTube', font: 'Roboto', size: '18', color: 'rgb(255, 255, 255)', weight: '400', background: 'rgb(24, 24, 24)'},
+                { name: 'Google', font: 'Roboto', size: '14', color: 'rgb(77, 81, 86)', weight: '400', background: 'rgb(255, 255, 255)'},
+                { name: 'Bing', font: 'Roboto', size: '16', color: 'rgb(17, 17, 17)', weight: '400', background: 'rgb(255, 255, 255)'},
+                { name: 'Wikipedia', font: 'sans-serif', size: '14', color: 'rgb(32, 33, 34)', weight: '400', background: 'rgb(255, 255, 255)'},
+                { name: 'Teams', font: 'Segoe UI', size: '14', color: 'rgb(255, 255, 255)', weight: '400', background: 'rgb(45, 44, 44)'},
+                { name: 'Word', font: 'Calibri', size: '14.6667', color: 'rgb(0, 0, 0)', weight: '400', background: 'rgb(255, 255, 255)'},
+            ];
+
+            const SOURCE = "SQUIRE TRELAWNEY, Dr. Livesey, and the rest of these gentlemen having\
+                asked me to write down the whole particulars about Treasure Island, from\
+                the beginning to the end, keeping nothing back but the bearings of the island,\
+                and that only because there is still treasure not yet lifted, I take up my\
+                pen in the year of grace 17__ and go back to the time when my father kept\
+                the Admiral Benbow inn and the brown old seaman with the sabre cut first\
+                took up his lodging under our roof.";
+
+            function cleartype_block(p) {
+                const cleartype = document.createElement('p');
+                cleartype.classList.add('content-block');
+                cleartype.style.backgroundColor = p.background;
+                cleartype.textContent = SOURCE;
+
+                return cleartype;
+            }
+
+            function old_grayscale_block(p) {
+                const grayscale = document.createElement('p');
+                grayscale.classList.add('content-block', 'force-grayscale');
+                grayscale.style.backgroundColor = p.background;
+                grayscale.textContent = SOURCE;
+
+                return grayscale;
+            }
+
+            function new_grayscale_block(p, idx, weight) {
+                const grayscale = document.createElement('img');
+                grayscale.classList.add('content-block');
+                grayscale.src = `img/${idx}-NG-${weight}.png`;
+                grayscale.style.padding = '0';
+
+                return grayscale;
+            }
+
+            function blocks(mode, p, idx) {
+                switch (mode) {
+                    // MODE A (ClearType vs Old Grayscale)
+                    case 'mode-a': return [ cleartype_block(p), old_grayscale_block(p) ];
+
+                    // MODE B (ClearType vs New Grayscale 100)
+                    case 'mode-b': return [ cleartype_block(p), new_grayscale_block(p, idx, 100) ];
+
+                    // MODE C (ClearType vs New Grayscale 200)
+                    case 'mode-c': return [ cleartype_block(p), new_grayscale_block(p, idx, 200) ];
+
+                    // MODE D (ClearType vs New Grayscale 400)
+                    case 'mode-d': return [ cleartype_block(p), new_grayscale_block(p, idx, 400) ];
+
+                    // MODE E (Old Grayscale vs New Grayscale 100)
+                    case 'mode-e': return [ old_grayscale_block(p), new_grayscale_block(p, idx, 100) ];
+
+                    // MODE F (Old Grayscale vs New Grayscale 200)
+                    case 'mode-f': return [ old_grayscale_block(p), new_grayscale_block(p, idx, 200) ];
+
+                    // MODE G (Old Grayscale vs New Grayscale 400)
+                    case 'mode-g': return [ old_grayscale_block(p), new_grayscale_block(p, idx, 400) ];
+
+                    // MODE H (New Grayscale 100 vs New Grayscale 200)
+                    case 'mode-h': return [ new_grayscale_block(p, idx, 100), new_grayscale_block(p, idx, 200) ];
+
+                    // MODE I (New Grayscale 200 vs New Grayscale 400)
+                    case 'mode-i': return [ new_grayscale_block(p, idx, 200), new_grayscale_block(p, idx, 400) ];
+
+                    // MODE J (New Grayscale 100 vs New Grayscale 400)
+                    case 'mode-j': return [ new_grayscale_block(p, idx, 100), new_grayscale_block(p, idx, 400) ];
+                }
+            }
+
+            function generate(mode) {
+                const content = document.querySelector('#content');
+                content.innerHTML = '';
+
+                PERMUATIONS.forEach(function(p, idx) {
+                    const content = document.querySelector('#content');
+
+                    const container = document.createElement('section');
+                    container.classList.add('content-container');
+                    container.style.fontFamily = p.font;
+                    container.style.fontSize = p.size;
+                    container.style.fontWeight = p.weight;
+                    container.style.color = p.color;
+
+                    const number = document.createElement('span');
+                    number.classList.add('content-number');
+                    number.textContent = idx;
+
+                    const [left, right] = blocks(mode, p, idx);
+                    
+                    container.appendChild(number);
+                    container.appendChild(left);
+                    container.appendChild(right);
+
+                    content.appendChild(container);
+                });
+            }
+
+            // Add event listener to adjust testing mode.
+            document.querySelector('#mode').addEventListener('change', function(e) {
+                const mode = e.target.value;
+                generate(mode);
+            });
+
+            // Generate the test content container.
+            let m = document.querySelector('#mode').value;
+            generate(m);
+
+            // Set the Pixel Ratio Message
+            document.querySelector('#pixel-ratio').textContent = window.devicePixelRatio;
+        </script>
+    </body>
+</html>
