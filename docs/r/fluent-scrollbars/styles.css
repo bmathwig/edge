@@ -1,0 +1,25 @@
+html, body {
+    overflow-x: hidden;
+    overflow-y: hidden;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
+main {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 200%;
+    width: 100%;
+}
