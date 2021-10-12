@@ -11,18 +11,20 @@ function define(html) {
         constructor() {
             super();
 
-            let shadow = this.attachShadow({ mode: 'open' });
-            shadow.innerHTML = html;
+            this._shadow = this.attachShadow({ mode: 'open' });
+            this._shadow.innerHTML = html;
 
-            this._scrollbar = shadow.querySelector('#scrollbar');
-            this._track = shadow.querySelector('#track');
-            this._thumb = shadow.querySelector('#thumb-inner');
+            this._scrollbar = this._shadow.querySelector('#scrollbar');
+            this._track = this._shadow.querySelector('#track');
+            this._thumb = this._shadow.querySelector('#thumb-inner');
 
             this._scrollbar.style.display = 'none';
+
+            this._interactive = false;
         }
 
         static get observedAttributes() {
-            return ['mode', 'theme', 'variation', 'visible', 'outline'];
+            return ['mode', 'theme', 'variation', 'visible', 'outline', 'interactive'];
         }
 
         attributeChangedCallback(name, oldValue, newValue) {
@@ -32,6 +34,28 @@ function define(html) {
                 case 'variation': this._setVariation(newValue); break;
                 case 'visible': this._setVisibility(newValue); break;
                 case 'outline': this._setOutline(newValue); break;
+                case 'interactive': this._setInteractive(newValue); break;
+            }
+        }
+
+        connectedCallback() {
+            this._scrollbar.addEventListener('pointerenter', this._handlePointerEnter.bind(this));
+            this._scrollbar.addEventListener('pointerleave', this._handlePointerExit.bind(this));
+        }
+
+        /**
+         * 
+         * @param {PointerEvent} e 
+         */
+        _handlePointerEnter(e) {
+            if (this._interactive) {
+                this._setMode('expanded');
+            }
+        }
+
+        _handlePointerExit(e) {
+            if (this._interactive) {
+                this._setMode('collapsed');
             }
         }
 
@@ -95,6 +119,18 @@ function define(html) {
          */
         _setOutline(width) {
             this._thumb.style.borderWidth = `${width}px`;
+        }
+
+        /**
+         * Set the interactive state of the scrollbar
+         * @param {string} interactive 
+         */
+        _setInteractive(interactive) {
+            if (interactive === "true") {
+                this._interactive = true;
+            } else {
+                this._interactive = false;
+            }
         }
 
         set percent(percent) {

@@ -55,6 +55,13 @@ async function onload() {
         scrollbar.setAttribute('outline', '0');
     }
 
+    // Set the interactive mode
+    if (qs.has('i')) {
+        scrollbar.setAttribute('interactive', qs.get('i'));
+    } else {
+        scrollbar.setAttribute('interactive', 'false');
+    }
+
     /*---------------------------------------------------------
     SCROLLING
     */
