@@ -24,7 +24,7 @@ function define(html) {
         }
 
         static get observedAttributes() {
-            return ['mode', 'theme', 'variation', 'visible', 'outline', 'interactive'];
+            return ['mode', 'theme', 'variation', 'visible', 'outline', 'interactive', 'acrylic'];
         }
 
         attributeChangedCallback(name, oldValue, newValue) {
@@ -35,6 +35,7 @@ function define(html) {
                 case 'visible': this._setVisibility(newValue); break;
                 case 'outline': this._setOutline(newValue); break;
                 case 'interactive': this._setInteractive(newValue); break;
+                case 'acrylic': this._setAcrylic(newValue); break;
             }
         }
 
@@ -130,6 +131,14 @@ function define(html) {
                 this._interactive = true;
             } else {
                 this._interactive = false;
+            }
+        }
+
+        _setAcrylic(acrylic) {
+            this._scrollbar.classList.remove('acrylic');
+
+            if (acrylic === "true") {
+                this._scrollbar.classList.add('acrylic');
             }
         }
 

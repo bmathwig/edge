@@ -62,6 +62,12 @@ async function onload() {
         scrollbar.setAttribute('interactive', 'false');
     }
 
+    if (qs.has('a')) {
+        scrollbar.setAttribute('acrylic', qs.get('a'));
+    } else {
+        scrollbar.setAttribute('acrylic', 'false');
+    }
+
     /*---------------------------------------------------------
     SCROLLING
     */
