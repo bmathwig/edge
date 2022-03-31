@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Excel Online Linked Scrolling</title>
+        <style>
+            :root {
+                --row-height: 16px;
+                --column-width: 48px;
+            }
+            html {
+                font-size: 14px;
+                height: 100%;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+            }
+
+            body {
+                height: 100%;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+            }
+
+            main {
+                display: flex;
+                width: 100%;
+                height: 100%;
+                flex-direction: column;
+            }
+
+            #top {
+                display: flex;
+                height: var(--row-height);
+            }
+
+            #top-left {
+                width: var(--column-width);
+                z-index: 2;
+                background: #f0f0f0;
+            }
+
+            #top-right {
+                flex-grow: 1;
+                z-index: 1;
+                background: #f0f0f0;
+            }
+
+            #bottom {
+                display: flex;
+                flex-grow: 1;
+                overflow: hidden;
+            }
+
+            #bottom-left {
+                width: var(--column-width);
+                z-index: 2;
+                background: #f0f0f0;
+            }
+
+            #bottom-right {
+                flex-grow: 1;
+                overflow: scroll;
+                z-index: 1;
+            }
+
+            #nexus {
+                width: var(--column-width);
+                height: var(--row-height);
+            }
+
+            #frozen-rows {
+                height: var(--row-height);
+            }
+
+            #frozen-columns {
+                width: var(--column-width);
+            }
+
+            .cell {
+                display: block;
+                width: var(--column-width);
+                height: var(--row-height);
+                border-right: 1px solid #bbb;
+                text-align: center;
+                box-sizing: border-box;
+                color: transparent
+            }
+
+            .row {
+                border-top: 1px solid #bbb;
+                display: inline-flex;
+                flex-direction: row;
+                box-sizing: border-box;
+                height: var(--row-height);
+            }
+
+            .row:first-child {
+                border-top: none;
+            }
+
+            .row:last-child {
+                border-bottom: 1px solid #bbb;
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <div id="top">
+                <div id="top-left">
+                    <section id="nexus"></section>
+                </div>
+                <div id="top-right">
+                    <section id="frozen-rows"></section>
+                </div>
+            </div>
+            <div id="bottom">
+                <div id="bottom-left">
+                    <section id="frozen-columns"></section>
+                </div>
+                <div id="bottom-right">
+                    <section id="content"></section>
+                </div>
+            </div>
+        </main>
+        <script>
+            const COLUMNS = 128;
+            const ROWS = 128;
+
+            function generateSpreadsheetDOM() {
+                // Create the frozen top row
+                let nexus = document.querySelector("#nexus");
+                let frozenRows = document.querySelector('#frozen-rows');
+                let frozenColumns = document.querySelector('#frozen-columns');
+                let content = document.querySelector("#content");
+
+                nexus.appendChild(generateRow(1));
+                frozenRows.appendChild(generateRow(COLUMNS));
+
+                for (let i = 0; i < ROWS; i++) {
+                    frozenColumns.appendChild(generateRow(1))
+                    content.appendChild(generateRow(COLUMNS));
+                }
+            }
+
+            function generateRow(columnCount) {
+                let row = document.createElement('div');
+
+                row.classList.add('row');
+
+                for (let i = 0; i < columnCount; i++) {
+                    let cell = document.createElement('span');
+                    cell.classList.add('cell');
+                    cell.textContent = i;
+
+                    row.appendChild(cell);
+                }
+
+                return row;
+            }
+            
+            /**
+             *  Setup Vertical Scroll Timeline 
+             */
+            function setupScrollTimelineVertical() {
+                let content = document.querySelector('#bottom-right');
+                let columns = document.querySelector('#frozen-columns');
+
+                let timeline = new ScrollTimeline({
+                    source: content,
+                    orientation: 'vertical'
+                });
+                //debugger;
+                let keyframe = new KeyframeEffect(
+                    columns,
+                    [
+                        { transform: "translateY(0px)" },
+                        { transform: `translateY(-${columns.scrollHeight - content.clientHeight}px)` }
+                    ],
+                    {
+                        duration: 1,
+                        fill: 'both'
+                    }
+                );
+
+                const Y = new Animation(keyframe, timeline);
+                Y.play();
+            }
+
+            /**
+             * Setup Horizontal Scroll Timeline
+             */
+            function setupScrollTimelineHorizontal() {
+                let content = document.querySelector('#bottom-right');
+                let rows = document.querySelector('#frozen-rows');
+
+                let timeline = new ScrollTimeline({
+                    source: content,
+                    orientation: 'horizontal'
+                });
+
+                let keyframe = new KeyframeEffect(
+                    rows,
+                    [
+                        { transform: "translateX(0px)" },
+                        { transform: `translateX(-${rows.scrollWidth - content.clientWidth}px)` }
+                    ],
+                    {
+                        duration: 1,
+                        fill: 'both'
+                    }
+                );
+
+                const X = new Animation(keyframe, timeline);
+                X.play();
+            }
+
+            (function ready () {
+                if (document.readyState != 'loading') {
+                    generateSpreadsheetDOM();
+                    setupScrollTimelineVertical();
+                    setupScrollTimelineHorizontal();
+
+                } else {
+                    document.addEventListener('DOMContentLoaded', ready);
+                }
+            })()
+        </script>
+    </body>
+</html>
