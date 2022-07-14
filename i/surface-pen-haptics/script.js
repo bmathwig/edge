@@ -2,7 +2,7 @@
 
 const Waveforms = {
   click: 4099,
-  buzz_continuous: 4100,
+  // buzz_continuous: 4100,
   rumble_continuous: 4101,
   press: 4102,
   release: 4103,
@@ -38,9 +38,8 @@ function isTransientWaveform(waveform) {
 
 function main() {
   const State = {
-    selectedWaveform: Waveforms.buzz_continuous,
-    currentWaveform: null,
-    intensity: 50
+    waveform: Waveforms.marker_continuous,
+    intensity: 1
   };
 
   /**
@@ -48,7 +47,15 @@ function main() {
    * @param {number} waveformId 
    */
   function setPredefinedWaveform(waveformId) {
-    State.selectedWaveform = waveformId;
+    State.waveform = waveformId;
+  }
+
+  /**
+   * Set the STATE `selectedIntensity` to the given value
+   * @param {number} intensityValue
+   */
+  function setIntensity(intensityValue) {
+    State.intensity = intensityValue;
   }
 
   /**
@@ -84,13 +91,16 @@ function main() {
       }
     }
 
+    // Set the default waveform
+    waveform_list.value = State.waveform;
+
     // Subscribe change events to STATE controls
     waveform_list.addEventListener('change', function(event) {
       setPredefinedWaveform(event.target.value);
     });
 
     intensity_slider.addEventListener('change', function(event) {
-      State.intensity = event.target.value;
+      setIntensity(event.target.value);
       document.querySelector('#options-intensity-value').textContent = event.target.value;
     });
 
@@ -106,16 +116,11 @@ function main() {
     const surface = document.querySelector('#haptics-surface');
 
     surface.addEventListener('pointerover', function(event) {
-      if (State.selectedWaveform !== State.currentWaveform) {
-        console.log(`[Debug] Changing Waveform: ${State.currentWaveform} => ${State.selectedWaveform}`);
-        State.currentWaveform = State.selectedWaveform;
-        
-        if (event.pointerType === 'pen') {
-          event.haptics.play(new HapticsPredefinedWaveform({
-            waveformId: State.currentWaveform,
-            intensity: State.intensity
-          }));
-        }
+      if (event.pointerType === 'pen') {
+        event.haptics.play(new HapticsPredefinedWaveform({
+          waveformId: State.waveform,
+          intensity: State.intensity
+        }));
       }
     });
 
